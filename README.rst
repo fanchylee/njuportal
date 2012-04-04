@@ -57,4 +57,4 @@ portal
 ----
 weibo::
 
-   Weibo:@Fanchy_Lee
+   @Fanchy_Lee
