@@ -53,7 +53,8 @@ portal
  
    $ make uninstall
 
-作者::
-------
+作者
+----
+weibo::
 
    Weibo:@Fanchy_Lee
