@@ -7,15 +7,12 @@
 #include <sys/types.h>
 #include <pwd.h>
 
+#include "definations.h"
+
 #define MAX_USER_NAME_LEN 20
 #define MAX_PASSWORD_LEN 100
 
 #define RELEASE
-
-enum portal_option{
-	login,
-	disconnect
-};
 
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
