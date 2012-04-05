@@ -22,3 +22,7 @@ char * dumpToStrFromFILE(FILE * fp){
 	dumpedStr[cnt ] = '\0' ;
 	return dumpedStr ;
 }
+int freeDumpedStr(char * p){
+	free(p);
+	return 0 ;
+}

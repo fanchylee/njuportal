@@ -19,6 +19,7 @@ char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
 int perform(int option) ;
 extern char * url_encode(char * ) ;
 extern char * dumpToStrFromFILE(FILE*) ;
+extern int freeDempedStr(char *);
 
 enum portal_option{
 	login,
@@ -99,6 +100,7 @@ int perform(int option)
 int main(int argc, char *argv[]){
 	FILE *fp = NULL;
 	char* uinfo = NULL ;
+	char* uinfo_head = NULL ;
 	char* temp = NULL ;
 	char* option = NULL ;
 	
@@ -125,7 +127,8 @@ int main(int argc, char *argv[]){
 
 	if( access(userfile,  F_OK) == 0) {
 		if((fp = fopen(userfile,"r")) != NULL){
-			uinfo = dumpToStrFromFILE(fp) ;
+			uinfo_head = dumpToStrFromFILE(fp) ;
+			uinfo = uinfo_head ;
 			temp = user ;
 			while((*temp = *uinfo) != '\0'
 				&& (*temp = *uinfo) != '\n' 
@@ -147,6 +150,7 @@ int main(int argc, char *argv[]){
 				uinfo ++ ;
 			}
 			*temp = '\0' ;
+			freeDumpedStr(uinfo_head) ;
 		}else{
 			perror("cannot open user file") ;
 			exit(1);
