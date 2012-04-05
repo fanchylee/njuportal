@@ -184,6 +184,7 @@ static int userfileread(const char* userfilename){
 		uinfo = omitwhitespace(uinfo) ;
 		if(*uinfo != '\0' )fieldcpy(recordfilename , uinfo) ;
 		freeDumpedStr(uinfo_head) ;
+		return 0 ;
 	}else{
 		perror("cannot open user file") ;
 		exit(1);
