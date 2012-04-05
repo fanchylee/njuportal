@@ -13,6 +13,8 @@
 #define MAX_PASSWORD_LEN 100
 #define MAX_RECORDFILENAME_LEN 500
 
+#define NO_RECORDFILENAME_IN_USERFILEREAD 1 
+
 #define RELEASE
 
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
@@ -149,14 +151,17 @@ int main(int argc, char *argv[]){
 /*login process end*/
 	}else{if(strcmp(option,"d") == 0){
 /*disconnect process start*/
-	if(argc == 2 ){
-		/* nothing to be done goto perform(disconnect) */
-	}else{if(argc == 3 ){
-		strcpy(recordfilename , argv[2]) ;
-	}else{
-		perror("wrong command amount");
-		exit(EXIT_FAILURE);
-	}}
+	if(access(userfilename , R_OK) == 0 ) {
+		if(userfileread(userfilename) == 
+		NO_RECORDFILENAME_IN_USERFILEREAD){
+			if(argc == 3 ){
+				strcpy(recordfilename , argv[2]) ;
+			}else{ if(argc > 3) {
+				perror("wrong command amount");
+				exit(EXIT_FAILURE);
+			}}
+		}
+	}
 	perform(disconnect);
 	inforecord(disconnect , recordfilename) ;
 /*disconnect process end*/
@@ -182,12 +187,16 @@ static int userfileread(const char* userfilename){
 		uinfo = omitwhitespace(uinfo) ;
 		uinfo = fieldcpy(password , uinfo) ;
 		uinfo = omitwhitespace(uinfo) ;
-		if(*uinfo != '\0' )fieldcpy(recordfilename , uinfo) ;
+		if(*uinfo != '\0' ){
+			fieldcpy(recordfilename , uinfo) ;
+		}else{
+			return NO_RECORDFILENAME_IN_USERFILEREAD ;
+		}
 		freeDumpedStr(uinfo_head) ;
 		return 0 ;
 	}else{
 		perror("cannot open user file") ;
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 /* copy a field string*/
