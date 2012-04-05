@@ -116,7 +116,7 @@ int main(int argc, char *argv[]){
 	if(argc > 1 ){
 		option = argv[1] ;
 	}else{
-		option = "d" ;
+		option = "i" ;
 	}	
 	
 	recordfile = malloc(strlen(homedir) + strlen(recordname) + 2) ;
@@ -181,8 +181,19 @@ int main(int argc, char *argv[]){
 	inforecord(login , recordfile) ;
 /*login process end*/
 	}else{if(strcmp(option,"d") == 0){
-		perform(disconnect);
-		inforecord(disconnect , recordfile) ;
+/*disconnect process start*/
+	if(argc == 2){
+	}else{if(argc == 3){
+		free(recordfile);
+		recordfile = malloc(strlen(argv[2])+2);
+		recordfile = strcpy(recordfile , argv[2]) ;
+	}else{
+		perror("wrong command amount");
+		exit(EXIT_FAILURE);
+	}}
+	perform(disconnect);
+	inforecord(disconnect , recordfile) ;
+/*disconnect process end*/
 	}else{
 		perror("unknown action");
 		exit(1);
