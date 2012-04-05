@@ -125,7 +125,7 @@ int main(int argc, char *argv[]){
 	
 
 
-	if( access(userfile,  F_OK) == 0) {
+	if( access(userfile,  R_OK) == 0) {
 		if((fp = fopen(userfile,"r")) != NULL){
 			uinfo_head = dumpToStrFromFILE(fp) ;
 			uinfo = uinfo_head ;
