@@ -12,7 +12,7 @@ int inforecord(enum portal_option o){
 
 	if((record = fopen(recordfilename  , "a")) == NULL ){
 		perror("cannot open record file in $HOME dir\n") ;
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	now = time(0);
 
@@ -21,7 +21,7 @@ int inforecord(enum portal_option o){
 		case disconnect:opt = 'd' ;break ;
 		default:
 		perror("unknown error\n"  ) ;
-		exit(1) ;
+		exit(EXIT_FAILURE) ;
 	}
 	fprintf(record , "%c @%ld\n" , opt , now) ;
 	return 0  ;
