@@ -13,7 +13,6 @@
 #define MAX_PASSWORD_LEN 100
 #define MAX_RECORDFILENAME_LEN 500
 
-#define NO_RECORDFILENAME_IN_USERFILEREAD 1 
 
 #define RELEASE
 
@@ -31,6 +30,34 @@ static int userfileread(const char * userfilename);
 static char* fieldcpy(char* dest , char* source) ;
 static char* omitwhitespace(char* start) ;
 
+
+#define NO_RECORDFILENAME_IN_USERFILEREAD 1 
+#define OK_IN_USERFILEREAD 0
+
+static int userfileread(const char* userfilename){
+	FILE *fp = NULL;
+	char* uinfo = NULL ;
+	char* uinfo_head = NULL ;
+	char* temp = NULL ;
+	if((fp = fopen(userfilename,"r")) != NULL){
+		uinfo_head = dumpToStrFromFILE(fp) ;
+		uinfo = uinfo_head ;
+		uinfo = fieldcpy(user , uinfo) ;
+		uinfo = omitwhitespace(uinfo) ;
+		uinfo = fieldcpy(password , uinfo) ;
+		uinfo = omitwhitespace(uinfo) ;
+		if(*uinfo != '\0' ){
+			fieldcpy(recordfilename , uinfo) ;
+		}else{
+			return NO_RECORDFILENAME_IN_USERFILEREAD ;
+		}
+		freeDumpedStr(uinfo_head) ;
+		return OK_IN_USERFILEREAD  ;
+	}else{
+		perror("cannot open user file") ;
+		exit(EXIT_FAILURE);
+	}
+}
 
 int perform(int option)
 {
@@ -175,30 +202,7 @@ int main(int argc, char *argv[]){
 
 }
 
-static int userfileread(const char* userfilename){
-	FILE *fp = NULL;
-	char* uinfo = NULL ;
-	char* uinfo_head = NULL ;
-	char* temp = NULL ;
-	if((fp = fopen(userfilename,"r")) != NULL){
-		uinfo_head = dumpToStrFromFILE(fp) ;
-		uinfo = uinfo_head ;
-		uinfo = fieldcpy(user , uinfo) ;
-		uinfo = omitwhitespace(uinfo) ;
-		uinfo = fieldcpy(password , uinfo) ;
-		uinfo = omitwhitespace(uinfo) ;
-		if(*uinfo != '\0' ){
-			fieldcpy(recordfilename , uinfo) ;
-		}else{
-			return NO_RECORDFILENAME_IN_USERFILEREAD ;
-		}
-		freeDumpedStr(uinfo_head) ;
-		return 0 ;
-	}else{
-		perror("cannot open user file") ;
-		exit(EXIT_FAILURE);
-	}
-}
+
 /* copy a field string*/
 static char* fieldcpy(char* dest,char* source){
 	while((*dest = *source) != '\0'
