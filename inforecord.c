@@ -3,11 +3,9 @@
 #include <stdlib.h>
 
 #include "definations.h"
+#include "globals.h"
 
-int inforecord(enum portal_option o, 
-		const char* recordfilename
-		)
-{
+int inforecord(enum portal_option o){
 	time_t now ;
 	FILE* record ;
 	char opt ;
