@@ -2,7 +2,8 @@
 #define __GLOBALS_H__
 
 
-extern user[] ;
-extern password[] ;
+extern char user[] ;
+extern char password[] ;
+extern char recordfilename[] ;
 
 #endif
