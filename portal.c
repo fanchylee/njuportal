@@ -168,10 +168,14 @@ int main(int argc, char *argv[]){
 	}else{if(argc == 4){
 		strcpy(user , argv[2]) ;
 		strcpy(password, argv[3]) ;
+	}else{if(argc == 5){
+		free(recordfile);
+		recordfile = malloc(strlen(argv[4])+2);
+		recordfile = strcpy(recordfile , argv[4]) ;
 	}else{
 		perror("请指定用户名和密码,或者创建含有用户名和密码的文件 ~/.portal\n");
 		exit(1);
-	}}
+	}}}
 
 	perform(login);
 	inforecord(login , recordfile) ;
