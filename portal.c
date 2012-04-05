@@ -7,12 +7,13 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-
+#define MAX_USER_NAME_LEN 100
+#define MAX_PASSWORD_LEN 100
 
 #define RELEASE
 
-char user[] = "b091180066" ;
-char password[] = "lpc/1991" ;
+char user[MAX_USER_NAME_LEN] = "b091180066" ;
+char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
 	
 
 int perform(int option) ;
