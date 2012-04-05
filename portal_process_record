@@ -1,0 +1,58 @@
+#! /usr/bin/awk -f 
+
+BEGIN {
+	s_last_login = 0 ;
+	s_last_logoff = 0 ;
+	h = 0 ;m = 0 ;s = 0 ;
+	sum = 0 ;
+	sum_h = 0;sum_m = 0;sum_s = 0 ;
+}
+$1 ~/l/{
+	s_last_login = substr($2,2) ;
+}
+$1 ~ /d/{
+	s_last_logoff = substr($2,2) ;
+}
+$1 ~ /[ld]/{
+	printf("%s:",$1);
+	system("date --date " $2);
+}
+$1 ~ /d/{
+	sum = sum + s_last_logoff - s_last_login ;
+	printf("----计----");
+	s = (s_last_logoff - s_last_login)%60 ;
+	m = ( (s_last_logoff - s_last_login)/60)%60 ;
+	h = (s_last_logoff - s_last_login)/60/60 ;
+	if(h >= 1){
+		printf("%d",h);
+		printf("小时");
+	}
+	if(m >= 1){
+		printf("%d",m);
+		printf("分");
+	}
+	if(s >= 1){
+		printf("%d",s);
+		printf("秒");
+	}
+	printf("\n");
+}
+END{
+	sum_s = sum%60;
+	sum_m = (sum/60)%60 ;
+	sum_h = sum/60/60 ;
+	printf("----总计----");
+	if(sum_h >= 1){
+		printf("%d",sum_h);
+		printf("小时");
+	}
+	if(sum_m >= 1){
+		printf("%d",sum_m);
+		printf("分");
+	}
+	if(sum_s >= 1){
+		printf("%d",sum_s);
+		printf("秒");
+	}
+	printf("\n");
+} 

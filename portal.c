@@ -7,24 +7,27 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-#define MAX_USER_NAME_LEN 100
+#define MAX_USER_NAME_LEN 20
 #define MAX_PASSWORD_LEN 100
 
 #define RELEASE
 
+enum portal_option{
+	login,
+	disconnect
+};
+
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
+
 	
 
 int perform(int option) ;
 extern char * url_encode(char * ) ;
 extern char * dumpToStrFromFILE(FILE*) ;
 extern int freeDempedStr(char *);
+extern int inforecord(enum portal_option , const char * );
 
-enum portal_option{
-	login,
-	disconnect
-};
 
 int perform(int option)
 {
@@ -105,10 +108,13 @@ int main(int argc, char *argv[]){
 	char* option = NULL ;
 	
 	const char rcname[] = "/.portal" ;
+	const char recordname[] = "/.portal.record" ;
+
+	char * userfile = NULL ;
+	char * recordfile = NULL ;
 
 	struct passwd *pw = getpwuid(getuid());
 	const char *homedir = pw->pw_dir;
-	char * userfile = NULL ;
 
 	if(argc > 1 ){
 		option = argv[1] ;
@@ -116,12 +122,19 @@ int main(int argc, char *argv[]){
 		option = "d" ;
 	}	
 	
+	recordfile = malloc(strlen(homedir) + strlen(recordname) + 2) ;
+	*recordfile = '\0' ;
+	recordfile = strcat(recordfile , homedir) ;
+	recordfile = strcat(recordfile , recordname) ;
+
+/*login process*/ 
 	if(strcmp(option,"l") == 0){
 	
 	userfile = malloc(strlen(homedir) + strlen(rcname) + 2) ;
 	*userfile = '\0' ;
 	userfile = strcat(userfile , homedir);
 	userfile = strcat(userfile , rcname) ;
+
 	
 
 
@@ -164,9 +177,11 @@ int main(int argc, char *argv[]){
 	}}
 
 	perform(login);
-
+	inforecord(login , recordfile) ;
+/*login process end*/
 	}else{if(strcmp(option,"d") == 0){
 		perform(disconnect);
+		inforecord(disconnect , recordfile) ;
 	}else{
 		perror("unknown action");
 		exit(1);

@@ -8,7 +8,7 @@ debug=-g
 
 target=portal
 
-$(target):$(target).o urlcode.o dumpToStrFromFILE.o
+$(target):$(target).o urlcode.o dumpToStrFromFILE.o inforecord.o
 	$(cc) -g -o  $@-`uname -m` $+ $(FLAGS) 
 %.o:%.c
 	$(cc) -g -c  $<
