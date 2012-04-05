@@ -1,3 +1,6 @@
+/* I downloaded this file from Internet 
+ * fanchylee
+ */
 /* Converts a hex character to its integer value */
 #include <stdio.h>
 #include <stdlib.h>
