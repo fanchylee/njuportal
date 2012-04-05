@@ -11,12 +11,13 @@
 
 #define MAX_USER_NAME_LEN 20
 #define MAX_PASSWORD_LEN 100
+#define MAX_RECORDFILENAME_LEN 500
 
 #define RELEASE
 
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
-
+char recordfilename[MAX_RECORDFILENAME_LEN] = "/home/fanchylee/.portal.record" ;
 	
 
 int perform(int option) ;
@@ -24,6 +25,9 @@ extern char * url_encode(char * ) ;
 extern char * dumpToStrFromFILE(FILE*) ;
 extern int freeDempedStr(char *);
 extern int inforecord(enum portal_option , const char * );
+static int userfileread(const char * userfilename);
+static char* fieldcpy(char* dest , char* source) ;
+static char* omitwhitespace(char* start) ;
 
 
 int perform(int option)
@@ -36,8 +40,6 @@ int perform(int option)
 	struct curl_slist *headers=NULL;   
 	FILE* FilePtr;
 	FILE* debug = stderr  ;
-	
-
 	
 	curl = curl_easy_init();
 	if((FilePtr = fopen("/dev/null"  , "w")) == NULL ){
@@ -98,17 +100,12 @@ int perform(int option)
 	return 0;
 }
 int main(int argc, char *argv[]){
-	FILE *fp = NULL;
-	char* uinfo = NULL ;
-	char* uinfo_head = NULL ;
-	char* temp = NULL ;
 	char* option = NULL ;
 	
 	const char rcname[] = "/.portal" ;
 	const char recordname[] = "/.portal.record" ;
 
-	char * userfile = NULL ;
-	char * recordfile = NULL ;
+	char * userfilename = NULL ;
 
 	struct passwd *pw = getpwuid(getuid());
 	const char *homedir = pw->pw_dir;
@@ -119,85 +116,96 @@ int main(int argc, char *argv[]){
 		option = "i" ;
 	}	
 	
-	recordfile = malloc(strlen(homedir) + strlen(recordname) + 2) ;
-	*recordfile = '\0' ;
-	recordfile = strcat(recordfile , homedir) ;
-	recordfile = strcat(recordfile , recordname) ;
+	*recordfilename = '\0' ;
+	strcat(recordfilename , homedir) ;
+	strcat(recordfilename , recordname) ;
 
 /*login process*/ 
 	if(strcmp(option,"l") == 0){
 	
-	userfile = malloc(strlen(homedir) + strlen(rcname) + 2) ;
-	*userfile = '\0' ;
-	userfile = strcat(userfile , homedir);
-	userfile = strcat(userfile , rcname) ;
-
-	
+	userfilename = malloc(strlen(homedir) + strlen(rcname) + 2) ;
+	*userfilename = '\0' ;
+	userfilename = strcat(userfilename , homedir);
+	userfilename = strcat(userfilename , rcname) ;
 
 
-	if( access(userfile,  R_OK) == 0) {
-		if((fp = fopen(userfile,"r")) != NULL){
-			uinfo_head = dumpToStrFromFILE(fp) ;
-			uinfo = uinfo_head ;
-			temp = user ;
-			while((*temp = *uinfo) != '\0'
-				&& (*temp = *uinfo) != '\n' 
-				&& (*temp = *uinfo) != '\t' 
-				&& (*temp = *uinfo) != ' '){
-				temp++;
-				uinfo++;
-			}
-			*temp = '\0' ;
-			while(*uinfo  == ' '
-				|| *uinfo == '\n'
-				|| *uinfo == '\t')uinfo++ ;
-			temp = password ;
-			while((*temp = *uinfo) != '\0'
-				&& (*temp = *uinfo) != '\n' 
-				&& (*temp = *uinfo) != '\t' 
-				&& (*temp = *uinfo) != ' '){
-				temp ++ ;
-				uinfo ++ ;
-			}
-			*temp = '\0' ;
-			freeDumpedStr(uinfo_head) ;
-		}else{
-			perror("cannot open user file") ;
-			exit(1);
-		}
+	if( access(userfilename,  R_OK) == 0) {
+/* will change user[] and password[] */
+		userfileread(userfilename) ;	
 	}else{if(argc == 4){
 		strcpy(user , argv[2]) ;
 		strcpy(password, argv[3]) ;
 	}else{if(argc == 5){
-		free(recordfile);
-		recordfile = malloc(strlen(argv[4])+2);
-		recordfile = strcpy(recordfile , argv[4]) ;
+		strcpy(user , argv[2]) ;
+		strcpy(password, argv[3]) ;
+		strcpy(recordfilename , argv[4]) ;
 	}else{
 		perror("请指定用户名和密码,或者创建含有用户名和密码的文件 ~/.portal\n");
 		exit(1);
 	}}}
 
 	perform(login);
-	inforecord(login , recordfile) ;
+	inforecord(login , recordfilename) ;
 /*login process end*/
 	}else{if(strcmp(option,"d") == 0){
 /*disconnect process start*/
-	if(argc == 2){
-	}else{if(argc == 3){
-		free(recordfile);
-		recordfile = malloc(strlen(argv[2])+2);
-		recordfile = strcpy(recordfile , argv[2]) ;
+	if(argc == 2 ){
+		/* nothing to be done goto perform(disconnect) */
+	}else{if(argc == 3 ){
+		strcpy(recordfilename , argv[2]) ;
 	}else{
 		perror("wrong command amount");
 		exit(EXIT_FAILURE);
 	}}
 	perform(disconnect);
-	inforecord(disconnect , recordfile) ;
+	inforecord(disconnect , recordfilename) ;
 /*disconnect process end*/
+	}else{if(strcmp(option , "i")){
+		/* TODO info */
 	}else{
 		perror("unknown action");
 		exit(1);
-	}}
+	}}}
 	return 0 ;
 
+}
+
+static int userfileread(const char* userfilename){
+	FILE *fp = NULL;
+	char* uinfo = NULL ;
+	char* uinfo_head = NULL ;
+	char* temp = NULL ;
+	if((fp = fopen(userfilename,"r")) != NULL){
+		uinfo_head = dumpToStrFromFILE(fp) ;
+		uinfo = uinfo_head ;
+		uinfo = fieldcpy(user , uinfo) ;
+		uinfo = omitwhitespace(uinfo) ;
+		uinfo = fieldcpy(password , uinfo) ;
+		uinfo = omitwhitespace(uinfo) ;
+		if(*uinfo != '\0' )fieldcpy(recordfilename , uinfo) ;
+		freeDumpedStr(uinfo_head) ;
+	}else{
+		perror("cannot open user file") ;
+		exit(1);
+	}
+}
+/* copy a field string*/
+static char* fieldcpy(char* dest,char* source){
+	while((*dest = *source) != '\0'
+	&& (*dest = *source) != '\n' 
+	&& (*dest = *source) != '\t' 
+	&& (*dest = *source) != ' '){
+		dest ++ ;
+		source ++ ;
+	}
+	*dest = '\0' ;
+	return source ;
+}
+static char* omitwhitespace(char* start){
+	while(*start  == ' '
+	|| *start == '\n'
+	|| *start == '\t'){
+		start++ ;
+	}
+	return start ;
 }
