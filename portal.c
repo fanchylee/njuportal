@@ -156,7 +156,7 @@ int main(int argc, char *argv[]){
 	if(argc > 1 ){
 		option = argv[1] ;
 	}else{
-		option = "i" ;
+		option = "s" ;
 	}	
 
 	if(strcmp(option,"l") == 0){
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]){
 	perform(disconnect);
 	inforecord(disconnect , recordfilename) ;
 /*disconnect process end*/
-	}else if(strcmp(option , "i") == 0){
+	}else if(strcmp(option , "s") == 0){
 		/* TODO info */
 		exit(EXIT_SUCCESS) ;
 	}else{

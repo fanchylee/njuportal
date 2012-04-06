@@ -3,7 +3,8 @@
 
 enum portal_option{
 	login,
-	disconnect
+	disconnect,
+	status
 };
 
 #endif
