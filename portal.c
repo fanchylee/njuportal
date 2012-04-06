@@ -11,14 +11,15 @@
 
 #define MAX_USER_NAME_LEN 20
 #define MAX_PASSWORD_LEN 100
-#define MAX_RECORDFILENAME_LEN 500
+#define MAX_FILENAME_LEN 500
 
 
 #define RELEASE
 
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
-char recordfilename[MAX_RECORDFILENAME_LEN] = "/home/fanchylee/.portal.record" ;
+char recordfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
+char userfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
 	
 
 int perform(int option) ;
@@ -133,30 +134,32 @@ int main(int argc, char *argv[]){
 	
 	const char rcname[] = "/.portal" ;
 	const char recordname[] = "/.portal.record" ;
-
-	char * userfilename = NULL ;
+/*
+ * files
+ */
 
 	struct passwd *pw = getpwuid(getuid());
 	const char *homedir = pw->pw_dir;
+
+	*recordfilename = '\0' ;
+	strcat(recordfilename , homedir) ;
+	strcat(recordfilename , recordname) ;
+	*userfilename = '\0' ;
+	strcat(userfilename , homedir);
+	strcat(userfilename , rcname) ;
+
+/*
+ * option  
+ */	
 
 	if(argc > 1 ){
 		option = argv[1] ;
 	}else{
 		option = "i" ;
 	}	
-	
-	*recordfilename = '\0' ;
-	strcat(recordfilename , homedir) ;
-	strcat(recordfilename , recordname) ;
 
-/*login process*/ 
 	if(strcmp(option,"l") == 0){
-	
-	userfilename = malloc(strlen(homedir) + strlen(rcname) + 2) ;
-	*userfilename = '\0' ;
-	userfilename = strcat(userfilename , homedir);
-	userfilename = strcat(userfilename , rcname) ;
-
+/*login process*/ 
 
 	if( access(userfilename,  R_OK) == 0) {
 /* will change user[] and password[] */
@@ -192,7 +195,7 @@ int main(int argc, char *argv[]){
 	perform(disconnect);
 	inforecord(disconnect , recordfilename) ;
 /*disconnect process end*/
-	}else{if(strcmp(option , "i")){
+	}else{if(strcmp(option , "i") == 0){
 		/* TODO info */
 	}else{
 		perror("unknown action");
