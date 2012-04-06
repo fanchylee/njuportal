@@ -4,8 +4,6 @@
 #include <curl/curl.h>
 #include <unistd.h>
 
-#include <sys/types.h>
-#include <pwd.h>
 
 #include "definations.h"
 
@@ -14,7 +12,7 @@
 #define MAX_FILENAME_LEN 500
 
 
-#define RELEASE
+//#define RELEASE
 
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
@@ -141,9 +139,7 @@ int main(int argc, char *argv[]){
 /*
  * files
  */
-
-	struct passwd *pw = getpwuid(getuid());
-	const char *homedir = pw->pw_dir;
+	const char *homedir = getenv("HOME");
 
 	*recordfilename = '\0' ;
 	strcat(recordfilename , homedir) ;
