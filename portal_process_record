@@ -19,21 +19,21 @@ $1 ~ /[ld]/{
 }
 $1 ~ /d/{
 	sum = sum + s_last_logoff - s_last_login ;
-	printf("----计----");
+	printf("--------");
 	s = (s_last_logoff - s_last_login)%60 ;
 	m = ( (s_last_logoff - s_last_login)/60)%60 ;
 	h = (s_last_logoff - s_last_login)/60/60 ;
 	if(h >= 1){
 		printf("%d",h);
-		printf("小时");
+		printf(" H ");
 	}
 	if(m >= 1){
 		printf("%d",m);
-		printf("分");
+		printf(" M ");
 	}
 	if(s >= 1){
 		printf("%d",s);
-		printf("秒");
+		printf(" S ");
 	}
 	printf("\n");
 }
@@ -41,18 +41,18 @@ END{
 	sum_s = sum%60;
 	sum_m = (sum/60)%60 ;
 	sum_h = sum/60/60 ;
-	printf("----总计----");
+	printf("----sum----");
 	if(sum_h >= 1){
 		printf("%d",sum_h);
-		printf("小时");
+		printf(" H ");
 	}
 	if(sum_m >= 1){
 		printf("%d",sum_m);
-		printf("分");
+		printf(" M ");
 	}
 	if(sum_s >= 1){
 		printf("%d",sum_s);
-		printf("秒");
+		printf(" S ");
 	}
 	printf("\n");
 } 
