@@ -24,5 +24,6 @@ int inforecord(enum portal_option o){
 		exit(EXIT_FAILURE) ;
 	}
 	fprintf(record , "%c @%ld\n" , opt , now) ;
+	fclose(record) ;
 	return 0  ;
 }
