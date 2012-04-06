@@ -68,15 +68,15 @@ int perform(int option)
 	char postdata[] = "&x=29&y=17";
 	char *url ;
 	struct curl_slist *headers=NULL;   
-	FILE* FilePtr;
+	FILE* trashfile;
 	FILE* debug = stderr  ;
 	
 	curl = curl_easy_init();
-	if((FilePtr = fopen("/dev/null"  , "w")) == NULL ){
+	if((trashfile = fopen("/dev/null"  , "w")) == NULL){
 		fprintf(stderr,"cannot open file /dev/null   \n") ;
 	}else{
 #ifdef RELEASE	
-		debug = FilePtr ;
+		debug = trashfile ;
 #endif
 	switch(option){
 		case login:
@@ -102,11 +102,15 @@ int perform(int option)
 
 	if(curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, url);
-
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, FilePtr);
-		curl_easy_setopt(curl, CURLOPT_VERBOSE , 1) ;
 #ifdef RELEASE
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, trashfile);
 		curl_easy_setopt(curl, CURLOPT_VERBOSE , 0) ;
+#endif
+#ifndef  RELEASE
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, debug);
+		curl_easy_setopt(curl, CURLOPT_VERBOSE , 1) ;
+#endif
+#ifdef RELEASE
 		curl_easy_setopt(curl, CURLOPT_NOPROGRESS , 0) ;
 #endif
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data); 
@@ -125,7 +129,7 @@ int perform(int option)
 		curl_slist_free_all(headers); /* free custom header list */
 		curl_easy_cleanup(curl);
 	}
-	fclose(FilePtr);
+	fclose(trashfile);
 	}
 	return 0;
 }
