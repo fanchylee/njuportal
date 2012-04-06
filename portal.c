@@ -165,44 +165,44 @@ int main(int argc, char *argv[]){
 	if( access(userfilename,  R_OK) == 0) {
 /* will change user[] and password[] */
 		userfileread(userfilename) ;	
-	}else{if(argc == 4){
+	}else if(argc == 4){
 		strcpy(user , argv[2]) ;
 		strcpy(password, argv[3]) ;
-	}else{if(argc == 5){
+	}else if(argc == 5){
 		strcpy(user , argv[2]) ;
 		strcpy(password, argv[3]) ;
 		strcpy(recordfilename , argv[4]) ;
 	}else{
 		perror("请指定用户名和密码,或者创建含有用户名和密码的文件 ~/.portal\n");
 		exit(1);
-	}}}
+	}
 
 	perform(login);
 	inforecord(login , recordfilename) ;
 /*login process end*/
-	}else{if(strcmp(option,"d") == 0){
+	}else if(strcmp(option,"d") == 0){
 /*disconnect process start*/
 	if(access(userfilename , R_OK) == 0 ) {
 		if(userfileread(userfilename) == 
 		NO_RECORDFILENAME_IN_USERFILEREAD){
 			if(argc == 3 ){
 				strcpy(recordfilename , argv[2]) ;
-			}else{ if(argc > 3) {
+			}else if(argc > 3) {
 				perror("wrong command amount");
 				exit(EXIT_FAILURE);
-			}}
+			}
 		}
 	}
 	perform(disconnect);
 	inforecord(disconnect , recordfilename) ;
 /*disconnect process end*/
-	}else{if(strcmp(option , "i") == 0){
+	}else if(strcmp(option , "i") == 0){
 		/* TODO info */
 		exit(EXIT_SUCCESS) ;
 	}else{
 		perror("unknown action");
 		exit(EXIT_FAILURE);
-	}}}
+	}
 	return 0 ;
 
 }
