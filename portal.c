@@ -197,9 +197,10 @@ int main(int argc, char *argv[]){
 /*disconnect process end*/
 	}else{if(strcmp(option , "i") == 0){
 		/* TODO info */
+		exit(EXIT_SUCCESS) ;
 	}else{
 		perror("unknown action");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}}}
 	return 0 ;
 
