@@ -18,6 +18,7 @@ char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
 char recordfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
 char userfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
+const char *homedir ;
 	
 
 int perform(int option) ;
@@ -139,7 +140,7 @@ int main(int argc, char *argv[]){
 /*
  * files
  */
-	const char *homedir = getenv("HOME");
+	homedir = getenv("HOME");
 
 	*recordfilename = '\0' ;
 	strcat(recordfilename , homedir) ;
