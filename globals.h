@@ -8,5 +8,7 @@ extern char password[] ;
 extern char recordfilename[] ;
 extern char userfilename[] ;
 extern const char *homedir ;
+extern FILE* trashfile ;
+extern FILE* debug ;
 
 #endif
