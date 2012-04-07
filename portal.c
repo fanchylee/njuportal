@@ -19,9 +19,11 @@ char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
 char recordfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
 char userfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
 const char *homedir ;
+FILE* debug ;
+FILE* trashfile ;
 	
 
-int perform(int option) ;
+int perform(int option , FILE* out) ;
 extern char * url_encode(char * ) ;
 extern char * dumpToStrFromFILE(FILE*) ;
 extern int freeDempedStr(char *);
@@ -52,6 +54,7 @@ static int userfileread(const char* userfilename){
 			return NO_RECORDFILENAME_IN_USERFILEREAD ;
 		}
 		freeDumpedStr(uinfo_head) ;
+		fclose(fp) ;
 		return OK_IN_USERFILEREAD  ;
 	}else{
 		perror("cannot open user file") ;
@@ -59,23 +62,17 @@ static int userfileread(const char* userfilename){
 	}
 }
 
-int perform(int option)
-{
+int perform(int option ,FILE* out ){
 	CURL *curl;
 	CURLcode res;
 	char data[1000] = "action=login&url=http\%3A\%2F\%2Fp.nju.edu.cn&login_username=" ;
 	char postdata[] = "&x=29&y=17";
 	char *url ;
 	struct curl_slist *headers=NULL;   
-	FILE* trashfile;
-	FILE* debug = stderr  ;
 	
 	curl = curl_easy_init();
-	if((trashfile = fopen("/dev/null"  , "w")) == NULL){
-		fprintf(stderr,"cannot open file /dev/null   \n") ;
-	}else{
 #ifdef RELEASE	
-		debug = trashfile ;
+	debug = trashfile ;
 #endif
 	switch(option){
 		case login:
@@ -101,13 +98,12 @@ int perform(int option)
 
 	if(curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, out);
 #ifdef RELEASE
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, trashfile);
 		curl_easy_setopt(curl, CURLOPT_VERBOSE , 0) ;
 #endif
 #ifndef  RELEASE
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, debug);
-		curl_easy_setopt(curl, CURLOPT_VERBOSE , 1) ;
+//		curl_easy_setopt(curl, CURLOPT_VERBOSE , 1) ;
 #endif
 #ifdef RELEASE
 		curl_easy_setopt(curl, CURLOPT_NOPROGRESS , 0) ;
@@ -128,8 +124,6 @@ int perform(int option)
 		curl_slist_free_all(headers); /* free custom header list */
 		curl_easy_cleanup(curl);
 	}
-	fclose(trashfile);
-	}
 	return 0;
 }
 int main(int argc, char *argv[]){
@@ -139,6 +133,7 @@ int main(int argc, char *argv[]){
 	const char recordname[] = "/.portal.record" ;
 	enum portal_option opt ;
 	pid_t pid ;
+
 /*
  * files
  */
@@ -150,7 +145,12 @@ int main(int argc, char *argv[]){
 	*userfilename = '\0' ;
 	strcat(userfilename , homedir);
 	strcat(userfilename , rcname) ;
-
+#ifndef RELEASE
+	debug = stderr ;
+	if((trashfile = fopen("/dev/null"  , "w")) == NULL){
+		fprintf(stderr,"cannot open file /dev/null   \n") ;
+	}
+#endif
 /*
  * option  
  */	
@@ -209,8 +209,9 @@ int main(int argc, char *argv[]){
 	}else if(pid == 0){
 		inforecord(opt , recordfilename) ;
 	}else if(pid > 0){
-		perform(opt);
+		perform(opt , stdout);
 	}
+	fclose(trashfile);
 	return 0 ;
 }
 

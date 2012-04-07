@@ -7,6 +7,6 @@ extern char user[] ;
 extern char password[] ;
 extern char recordfilename[] ;
 extern char userfilename[] ;
-const char *homedir ;
+extern const char *homedir ;
 
 #endif
