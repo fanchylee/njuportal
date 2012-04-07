@@ -12,7 +12,7 @@
 #define MAX_FILENAME_LEN 500
 
 
-//#define RELEASE
+#define RELEASE
 
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
@@ -28,6 +28,7 @@ extern char * url_encode(char * ) ;
 extern char * dumpToStrFromFILE(FILE*) ;
 extern int freeDempedStr(char *);
 extern int inforecord(enum portal_option , const char * );
+extern int regexmatch(FILE* in, const char* matchstr , FILE* out);
 static int userfileread(const char * userfilename);
 static char* fieldcpy(char* dest , char* source) ;
 static char* omitwhitespace(char* start) ;
@@ -105,7 +106,7 @@ int perform(int option ,FILE* out ){
 //		curl_easy_setopt(curl, CURLOPT_VERBOSE , 1) ;
 #endif
 #ifdef RELEASE
-		curl_easy_setopt(curl, CURLOPT_NOPROGRESS , 0) ;
+//		curl_easy_setopt(curl, CURLOPT_NOPROGRESS , 0) ;
 #endif
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data); 
 
@@ -226,8 +227,21 @@ int main(int argc, char *argv[]){
 		fclose(curlin) ;
 		switch(opt){
 		case login:
+		if(regexmatch(curlout, "您已经登录",debug)){
+			fprintf(stderr, "Portal has been on\n");
+			return 0 ;
+		}else{
+			fprintf(stdout, "login \n");
+		}
 		break ;
+
 		case disconnect:
+		if(regexmatch(curlout,"下线失败",debug)){
+			fprintf(stderr, "Portal has been off\n");
+			return 0;
+		}else{
+			fprintf(stdout, "disconnect\n"); 
+		}
 		break ;
 		
 		default:
@@ -239,7 +253,7 @@ int main(int argc, char *argv[]){
 		inforecord(opt , recordfilename) ;
 	}else {
 		fclose(curlout);
-		perform(opt , stdout);
+		perform(opt , curlin);
 		fclose(curlin) ;
 	}
 	fclose(trashfile);
