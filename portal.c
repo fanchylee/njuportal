@@ -137,6 +137,7 @@ int main(int argc, char *argv[]){
 	
 	const char rcname[] = "/.portal" ;
 	const char recordname[] = "/.portal.record" ;
+	enum portal_option opt ;
 /*
  * files
  */
@@ -161,50 +162,48 @@ int main(int argc, char *argv[]){
 
 	if(strcmp(option,"l") == 0){
 /*login process*/ 
-
-	if( access(userfilename,  R_OK) == 0) {
+		if( access(userfilename,  R_OK) == 0) {
 /* will change user[] and password[] */
-		userfileread(userfilename) ;	
-	}else if(argc == 4){
-		strcpy(user , argv[2]) ;
-		strcpy(password, argv[3]) ;
-	}else if(argc == 5){
-		strcpy(user , argv[2]) ;
-		strcpy(password, argv[3]) ;
-		strcpy(recordfilename , argv[4]) ;
-	}else{
-		perror("请指定用户名和密码,或者创建含有用户名和密码的文件 ~/.portal\n");
-		exit(1);
-	}
-
-	perform(login);
-	inforecord(login , recordfilename) ;
+			userfileread(userfilename) ;	
+		}else if(argc == 4){
+			strcpy(user , argv[2]) ;
+			strcpy(password, argv[3]) ;
+		}else if(argc == 5){
+			strcpy(user , argv[2]) ;
+			strcpy(password, argv[3]) ;
+			strcpy(recordfilename , argv[4]) ;
+		}else{
+			perror("请指定用户名和密码,或者创建含有用户名和密码的文件 ~/.portal\n");
+			exit(1);
+		}
+		opt = login ;
 /*login process end*/
 	}else if(strcmp(option,"d") == 0){
 /*disconnect process start*/
-	if(access(userfilename , R_OK) == 0 ) {
-		if(userfileread(userfilename) == 
-		NO_RECORDFILENAME_IN_USERFILEREAD){
-			if(argc == 3 ){
-				strcpy(recordfilename , argv[2]) ;
-			}else if(argc > 3) {
-				perror("wrong command amount");
-				exit(EXIT_FAILURE);
+		if(access(userfilename , R_OK) == 0 ) {
+			if(userfileread(userfilename) == 
+			NO_RECORDFILENAME_IN_USERFILEREAD){
+				if(argc == 3 ){
+					strcpy(recordfilename , argv[2]) ;
+				}else if(argc > 3) {
+					perror("wrong command amount");
+					exit(EXIT_FAILURE);
+				}
 			}
 		}
-	}
-	perform(disconnect);
-	inforecord(disconnect , recordfilename) ;
+		opt = disconnect ;
 /*disconnect process end*/
 	}else if(strcmp(option , "s") == 0){
-		/* TODO info */
+		/* TODO status */
+		opt = status ;
 		exit(EXIT_SUCCESS) ;
 	}else{
 		perror("unknown action");
 		exit(EXIT_FAILURE);
 	}
+	perform(opt);
+	inforecord(opt , recordfilename) ;
 	return 0 ;
-
 }
 
 
