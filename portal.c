@@ -138,6 +138,7 @@ int main(int argc, char *argv[]){
 	const char rcname[] = "/.portal" ;
 	const char recordname[] = "/.portal.record" ;
 	enum portal_option opt ;
+	pid_t pid ;
 /*
  * files
  */
@@ -201,8 +202,15 @@ int main(int argc, char *argv[]){
 		perror("unknown action");
 		exit(EXIT_FAILURE);
 	}
-	perform(opt);
-	inforecord(opt , recordfilename) ;
+	
+	if((pid = fork() ) < 0){
+		perror("fork error") ;
+		exit(EXIT_FAILURE) ;
+	}else if(pid == 0){
+		inforecord(opt , recordfilename) ;
+	}else if(pid > 0){
+		perform(opt);
+	}
 	return 0 ;
 }
 
