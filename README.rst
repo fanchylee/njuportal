@@ -53,15 +53,15 @@ portal
 
 所有的这些方法都会首先查找 ~/.portal 中的信息，如果 ~/.portal 中指定了相应信息，则上述指令中提供的 _帐号 _密码 _记录文件名 均无效。对于后两种方法，如果 ~/.portal 也没有指定 _记录文件名 则采用默认值 ~/.portal.record 。对于第三中方法，如果 ~/.portal 没有指定 _帐号 _密码 则报错。
 
-在 ~/.portal 中指定相关信息的方法是::
+在 ~/.portal 中指定相关信息的方法如下面的例子所示::
 
-   $ echo "b091180000 0000000 /home/username/.portal.record"  > ~/.portal
+   $ echo "b000000000 0000000 /home/username/.portal.record"  > ~/.portal
 
 三个字段分别代表 _帐号 _密码 _记录文件名 。
 
 或者::
 
-   $ echo "b091180000 0000000 > ~/.portal
+   $ echo "b000000000 0000000 > ~/.portal
 
 后一种方法只指定了 _帐号 _密码 省略了 _记录文件名 。
 
