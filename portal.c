@@ -17,7 +17,7 @@
 char user[MAX_USER_NAME_LEN] = "b091180066" ;
 char password[MAX_PASSWORD_LEN] = "lpc/1991" ;
 char recordfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
-char userfilename[MAX_FILENAME_LEN] = "/etc/.portal.record" ;
+char userfilename[MAX_FILENAME_LEN] = "/etc/.portal" ;
 const char *homedir ;
 FILE* debug ;
 FILE* trashfile ;
