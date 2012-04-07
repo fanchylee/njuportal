@@ -71,9 +71,6 @@ int perform(int option ,FILE* out ){
 	struct curl_slist *headers=NULL;   
 	
 	curl = curl_easy_init();
-#ifdef RELEASE	
-	debug = trashfile ;
-#endif
 	switch(option){
 		case login:
 		url = "http://p.nju.edu.cn/portal/" ;
@@ -135,6 +132,9 @@ int main(int argc, char *argv[]){
 	const char recordname[] = "/.portal.record" ;
 	enum portal_option opt ;
 	pid_t pid ;
+	int curl_pipe[2] ;
+	FILE* curlin ;
+	FILE* curlout ;
 
 /*
  * files
@@ -149,10 +149,24 @@ int main(int argc, char *argv[]){
 	strcat(userfilename , rcname) ;
 #ifndef RELEASE
 	debug = stderr ;
-	if((trashfile = fopen("/dev/null"  , "w")) == NULL){
-		fprintf(stderr,"cannot open file /dev/null   \n") ;
-	}
 #endif
+	if((trashfile = fopen("/dev/null"  , "w")) == NULL){
+		perror("cannot open file /dev/null") ;
+		exit(EXIT_FAILURE);
+	}
+#ifdef RELEASE	
+	debug = trashfile ;
+#endif
+	if(pipe(curl_pipe) < 0){
+		perror("pipe error");
+		exit(EXIT_FAILURE);
+	}else if((curlin  = fdopen(curl_pipe[1] ,"w")) == NULL){
+		perror("fdopen pipe 1 error for write");
+		exit(EXIT_FAILURE);
+	}else if((curlout = fdopen(curl_pipe[0] ,"r")) == NULL){
+		perror("fdopen pipe 0 error for read");
+		exit(EXIT_FAILURE);
+	}
 /*
  * option  
  */	
@@ -208,10 +222,25 @@ int main(int argc, char *argv[]){
 	if((pid = fork() ) < 0){
 		perror("fork error") ;
 		exit(EXIT_FAILURE) ;
-	}else if(pid == 0){
-		inforecord(opt , recordfilename) ;
 	}else if(pid > 0){
+		fclose(curlin) ;
+		switch(opt){
+		case login:
+		break ;
+		case disconnect:
+		break ;
+		
+		default:
+		perror("unknown portal option") ;
+		exit(EXIT_FAILURE);
+		break ;
+		}
+		fclose(curlout);
+		inforecord(opt , recordfilename) ;
+	}else {
+		fclose(curlout);
 		perform(opt , stdout);
+		fclose(curlin) ;
 	}
 	fclose(trashfile);
 	return 0 ;
