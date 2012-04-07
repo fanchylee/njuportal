@@ -81,8 +81,10 @@ int perform(int option ,FILE* out ){
 		strcat(data , "&login_password=") ;
 		strcat(data , url_encode(password)) ;
 		strcat(data , postdata ) ;
+#ifndef RELEASE
 		fputc('\n', debug);
 		fputs(data, debug);
+#endif
 		break ;
 		
 		case disconnect:
