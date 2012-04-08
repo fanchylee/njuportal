@@ -36,6 +36,10 @@ int perform(enum portal_option option ,FILE* out ){
 		strcpy(data , "action=disconnect") ;
 		break ;
 		
+		case status:
+		url = "http://p.nju.edu.cn/portal/" ;
+		break ;
+		
 		default :
 		perror("switch error");
 		exit(1) ;

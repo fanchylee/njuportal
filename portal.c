@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
 			strcpy(password, argv[3]) ;
 			strcpy(recordfilename , argv[4]) ;
 		}else{
-			perror("请指定用户名和密码,或者创建含有用户名和密码的文件 ~/.portal\n");
+			perror("please specify the username and password or create ~/.portal\n");
 			exit(1);
 		}
 		opt = login ;
@@ -148,9 +148,7 @@ int main(int argc, char *argv[]){
 		opt = disconnect ;
 /*disconnect end*/
 	}else if(strcmp(option , "s") == 0){
-		/* TODO status */
 		opt = status ;
-		exit(EXIT_SUCCESS) ;
 	}else{
 		perror("unknown action");
 		exit(EXIT_FAILURE);
@@ -175,29 +173,40 @@ int main(int argc, char *argv[]){
 		switch(opt){
 		case login:
 		if(regexmatch(curlout, "您已经登录",debug)){
-			fprintf(stderr, "Portal has been on\n");
+			fprintf(stderr, "\nPortal has been on\n");
 			return 0 ;
 		}else{
-			fprintf(stdout, "login \n");
+			fprintf(stdout, "\nlogin \n");
 		}
+		inforecord(opt , recordfilename) ;
 		break ;
 
 		case disconnect:
 		if(regexmatch(curlout,"下线失败",debug)){
-			fprintf(stderr, "Portal has been off\n");
+			fprintf(stderr, "\nPortal has been off\n");
 			return 0;
 		}else{
-			fprintf(stdout, "disconnect\n"); 
+			fprintf(stdout, "\ndisconnect\n"); 
+		}
+		inforecord(opt , recordfilename) ;
+		break ;
+
+		case status:
+		if(regexmatch(curlout, "请输入", debug)){
+			fprintf(stdout, "\nnot connected\n");
+		}else{
+			fprintf(stdout, "\nconnected\n");
 		}
 		break ;
 		
 		default:
+		fclose(curlout);
 		perror("unknown portal option") ;
 		exit(EXIT_FAILURE);
 		break ;
 		}
 		fclose(curlout);
-		inforecord(opt , recordfilename) ;
+		return 0;
 /*child process end*/
 	}else {
 /*child's child process start*/
