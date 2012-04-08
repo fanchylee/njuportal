@@ -225,8 +225,7 @@ int main(int argc, char *argv[]){
 	}else if(pid > 0) {
 		fclose(trashfile);
 		return 0 ;
-	}else {
-	if((pid = fork() ) < 0){
+	}else if((pid = fork() ) < 0){
 		perror("fork error") ;
 		exit(EXIT_FAILURE) ;
 	}else if(pid > 0){
@@ -263,7 +262,6 @@ int main(int argc, char *argv[]){
 		fclose(curlout);
 		perform(opt , curlin);
 		fclose(curlin) ;
-	}
 	}
 }
 
