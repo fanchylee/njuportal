@@ -219,11 +219,18 @@ int main(int argc, char *argv[]){
 		perror("unknown action");
 		exit(EXIT_FAILURE);
 	}
-	
+	if((pid = fork() ) < 0){
+		perror("fork error") ;
+		exit(EXIT_FAILURE) ;
+	}else if(pid > 0) {
+		fclose(trashfile);
+		return 0 ;
+	}else {
 	if((pid = fork() ) < 0){
 		perror("fork error") ;
 		exit(EXIT_FAILURE) ;
 	}else if(pid > 0){
+/*first child process*/	
 		fclose(curlin) ;
 		switch(opt){
 		case login:
@@ -252,12 +259,12 @@ int main(int argc, char *argv[]){
 		fclose(curlout);
 		inforecord(opt , recordfilename) ;
 	}else {
+/*second child process*/
 		fclose(curlout);
 		perform(opt , curlin);
 		fclose(curlin) ;
 	}
-	fclose(trashfile);
-	return 0 ;
+	}
 }
 
 
