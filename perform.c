@@ -8,6 +8,7 @@
 
 
 extern char * url_encode(char * ) ;
+
 int perform(enum portal_option option ,FILE* out ){
 	CURL *curl;
 	CURLcode res;
