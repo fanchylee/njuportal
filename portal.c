@@ -179,7 +179,7 @@ int main(int argc, char *argv[]){
 	}	
 
 	if(strcmp(option,"l") == 0){
-/*login process*/ 
+/*login start*/ 
 		if( access(userfilename,  R_OK) == 0) {
 /* will change user[] and password[] */
 			userfileread(userfilename) ;	
@@ -195,9 +195,9 @@ int main(int argc, char *argv[]){
 			exit(1);
 		}
 		opt = login ;
-/*login process end*/
+/*login  end*/
 	}else if(strcmp(option,"d") == 0){
-/*disconnect process start*/
+/*disconnect start*/
 		if(access(userfilename , R_OK) == 0 ) {
 			if(userfileread(userfilename) == 
 			NO_RECORDFILENAME_IN_USERFILEREAD){
@@ -210,7 +210,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 		opt = disconnect ;
-/*disconnect process end*/
+/*disconnect end*/
 	}else if(strcmp(option , "s") == 0){
 		/* TODO status */
 		opt = status ;
@@ -219,17 +219,22 @@ int main(int argc, char *argv[]){
 		perror("unknown action");
 		exit(EXIT_FAILURE);
 	}
+/*
+ * child process
+ */
 	if((pid = fork() ) < 0){
 		perror("fork error") ;
 		exit(EXIT_FAILURE) ;
 	}else if(pid > 0) {
+/*this process start*/
 		fclose(trashfile);
 		return 0 ;
+/*this process end*/
 	}else if((pid = fork() ) < 0){
 		perror("fork error") ;
 		exit(EXIT_FAILURE) ;
 	}else if(pid > 0){
-/*first child process*/	
+/*child process start*/	
 		fclose(curlin) ;
 		switch(opt){
 		case login:
@@ -257,11 +262,13 @@ int main(int argc, char *argv[]){
 		}
 		fclose(curlout);
 		inforecord(opt , recordfilename) ;
+/*child process end*/
 	}else {
-/*second child process*/
+/*child's child process start*/
 		fclose(curlout);
 		perform(opt , curlin);
 		fclose(curlin) ;
+/*child's child process end*/
 	}
 }
 
