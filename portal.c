@@ -159,16 +159,8 @@ int main(int argc, char *argv[]){
 	if((pid = fork() ) < 0){
 		perror("fork error") ;
 		exit(EXIT_FAILURE) ;
-	}else if(pid > 0) {
-/*this process start*/
-		fclose(trashfile);
-		return 0 ;
-/*this process end*/
-	}else if((pid = fork() ) < 0){
-		perror("fork error") ;
-		exit(EXIT_FAILURE) ;
 	}else if(pid > 0){
-/*child process start*/	
+/*this process start*/	
 		fclose(curlin) ;
 		switch(opt){
 		case login:
@@ -206,14 +198,15 @@ int main(int argc, char *argv[]){
 		break ;
 		}
 		fclose(curlout);
+		fclose(trashfile);
 		return 0;
-/*child process end*/
+/*this process end*/
 	}else {
-/*child's child process start*/
+/* child process start*/
 		fclose(curlout);
 		perform(opt , curlin);
 		fclose(curlin) ;
-/*child's child process end*/
+/* child process end*/
 	}
 }
 
