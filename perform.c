@@ -16,14 +16,19 @@ int perform(enum portal_option option ,FILE* out ){
 	char postdata[] = "&x=29&y=17";
 	char *url ;
 	struct curl_slist *headers=NULL;   
+
+	char* user_encode ;
+	char* password_encode ;
 	
 	curl = curl_easy_init();
 	switch(option){
 		case login:
 		url = "http://p.nju.edu.cn/portal/" ;
-		strcat(data , url_encode(user)) ;
+		strcat(data , user_encode = url_encode(user)) ;
+		free(user_encode);
 		strcat(data , "&login_password=") ;
-		strcat(data , url_encode(password)) ;
+		strcat(data , password_encode = url_encode(password)) ;
+		free(password_encode);
 		strcat(data , postdata ) ;
 #ifndef RELEASE
 		fputc('\n', debug);
