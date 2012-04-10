@@ -198,8 +198,6 @@ int main(int argc, char *argv[]){
 		break ;
 		}
 		fclose(curlout);
-		fclose(trashfile);
-		return 0;
 /*this process end*/
 	}else {
 /* child process start*/
@@ -208,6 +206,8 @@ int main(int argc, char *argv[]){
 		fclose(curlin) ;
 /* child process end*/
 	}
+	fclose(trashfile);
+	return 0;
 }
 
 
