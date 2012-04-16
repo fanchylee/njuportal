@@ -11,7 +11,7 @@ portal
 
    $ sudo apt-get install libcurl4-openssl-dev
 
-以上是在debian中安装方法，对于其他系统可以尝试::
+以上是在debian中安装方法，对于其他 debian 衍生系统可以尝试::
 
    $ apt-cache search libcurl
 
