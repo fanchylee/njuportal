@@ -6,13 +6,19 @@
 #include "definations.h"
 #include "globals.h"
 
+#define IP
+
 
 extern char * url_encode(char * ) ;
 
 int perform(enum portal_option option ,FILE* out ){
 	CURL *curl;
 	CURLcode res;
+#ifndef IP
 	char data[1000] = "action=login&url=http\%3A\%2F\%2Fp.nju.edu.cn&login_username=" ;
+#else
+	char data[1000] = "action=login&url=http\%3A\%2F\%2F219.219.114.15&login_username=" ;
+#endif
 	char postdata[] = "&x=29&y=17";
 	char *url ;
 	struct curl_slist *headers=NULL;   
@@ -23,7 +29,11 @@ int perform(enum portal_option option ,FILE* out ){
 	curl = curl_easy_init();
 	switch(option){
 		case login:
+#ifndef IP
 		url = "http://p.nju.edu.cn/portal/" ;
+#else
+		url = "http://219.219.114.15/portal/" ;
+#endif
 		strcat(data , user_encode = url_encode(user)) ;
 		free(user_encode);
 		strcat(data , "&login_password=") ;
@@ -37,12 +47,20 @@ int perform(enum portal_option option ,FILE* out ){
 		break ;
 		
 		case disconnect:
+#ifndef IP
 		url = "http://p.nju.edu.cn/portal/index.html" ;
+#else
+		url = "http://219.219.114.15/portal/index.html" ;
+#endif
 		strcpy(data , "action=disconnect") ;
 		break ;
 		
 		case status:
+#ifndef IP
 		url = "http://p.nju.edu.cn/portal/" ;
+#else
+		url = "http://219.219.114.15/portal/" ;
+#endif
 		break ;
 		
 		default :
@@ -64,10 +82,14 @@ int perform(enum portal_option option ,FILE* out ){
 //		curl_easy_setopt(curl, CURLOPT_NOPROGRESS , 0) ;
 #endif
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data); 
-
+#ifndef IP
 		headers = curl_slist_append(headers, "Host: p.nju.edu.cn");
-		headers = curl_slist_append(headers, "Connection: keep-alive");
 		headers = curl_slist_append(headers, "Referer: http://p.nju.edu.cn/portal/");
+#else
+		headers = curl_slist_append(headers, "Host: 219.219.114.15");
+		headers = curl_slist_append(headers, "Referer: http://219.219.114.15/portal/");
+#endif
+		headers = curl_slist_append(headers, "Connection: keep-alive");
 		headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
 	
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers); 
