@@ -15,9 +15,9 @@ int perform(enum portal_option option ,FILE* out ){
 	CURL *curl;
 	CURLcode res;
 #ifndef IP
-	char data[1000] = "action=login&url=http\%3A\%2F\%2Fp.nju.edu.cn&login_username=" ;
+	char data[1000] = "action=login&url=http\%3A\%2F\%2Fp.nju.edu.cn&p_login=p_login&username=" ;
 #else
-	char data[1000] = "action=login&url=http\%3A\%2F\%2F219.219.114.15&login_username=" ;
+	char data[1000] = "action=login&url=http\%3A\%2F\%2F219.219.114.15&p_login=p_login&username=" ;
 #endif
 	char postdata[] = "&x=29&y=17";
 	char *url ;
@@ -30,13 +30,13 @@ int perform(enum portal_option option ,FILE* out ){
 	switch(option){
 		case login:
 #ifndef IP
-		url = "http://p.nju.edu.cn/portal/" ;
+		url = "http://p.nju.edu.cn/portal.do" ;
 #else
-		url = "http://219.219.114.15/portal/" ;
+		url = "http://219.219.114.15/portal.do" ;
 #endif
 		strcat(data , user_encode = url_encode(user)) ;
 		free(user_encode);
-		strcat(data , "&login_password=") ;
+		strcat(data , "&password=") ;
 		strcat(data , password_encode = url_encode(password)) ;
 		free(password_encode);
 		strcat(data , postdata ) ;
@@ -48,18 +48,18 @@ int perform(enum portal_option option ,FILE* out ){
 		
 		case disconnect:
 #ifndef IP
-		url = "http://p.nju.edu.cn/portal/index.html" ;
+		url = "http://p.nju.edu.cn/portal.do" ;
 #else
-		url = "http://219.219.114.15/portal/index.html" ;
+		url = "http://219.219.114.15/portal.do" ;
 #endif
-		strcpy(data , "action=disconnect") ;
+		strcpy(data , "p_logout=p_logout&action=logout") ;
 		break ;
 		
 		case status:
 #ifndef IP
-		url = "http://p.nju.edu.cn/portal/" ;
+		url = "http://p.nju.edu.cn/portal.do" ;
 #else
-		url = "http://219.219.114.15/portal/" ;
+		url = "http://219.219.114.15/portal.do" ;
 #endif
 		break ;
 		
@@ -84,10 +84,10 @@ int perform(enum portal_option option ,FILE* out ){
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data); 
 #ifndef IP
 		headers = curl_slist_append(headers, "Host: p.nju.edu.cn");
-		headers = curl_slist_append(headers, "Referer: http://p.nju.edu.cn/portal/");
+		headers = curl_slist_append(headers, "Referer: http://p.nju.edu.cn/portal.do");
 #else
 		headers = curl_slist_append(headers, "Host: 219.219.114.15");
-		headers = curl_slist_append(headers, "Referer: http://219.219.114.15/portal/");
+		headers = curl_slist_append(headers, "Referer: http://219.219.114.15/portal.do");
 #endif
 		headers = curl_slist_append(headers, "Connection: keep-alive");
 		headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
