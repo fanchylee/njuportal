@@ -6,7 +6,7 @@
 #include "definations.h"
 #include "globals.h"
 
-#define IP
+//#define IP
 
 
 extern char * url_encode(char * ) ;
@@ -19,7 +19,7 @@ int perform(enum portal_option option ,FILE* out ){
 #else
 	char data[1000] = "action=login&url=http\%3A\%2F\%2F219.219.114.15&p_login=p_login&username=" ;
 #endif
-	char postdata[] = "&x=29&y=17";
+	char postdata[] = "&code=8&x=60&y=20";
 	char *url ;
 	struct curl_slist *headers=NULL;   
 
@@ -76,7 +76,7 @@ int perform(enum portal_option option ,FILE* out ){
 		curl_easy_setopt(curl, CURLOPT_VERBOSE , 0) ;
 #endif
 #ifndef  RELEASE
-//		curl_easy_setopt(curl, CURLOPT_VERBOSE , 1) ;
+		curl_easy_setopt(curl, CURLOPT_VERBOSE , 1) ;
 #endif
 #ifdef RELEASE
 //		curl_easy_setopt(curl, CURLOPT_NOPROGRESS , 0) ;

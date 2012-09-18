@@ -202,7 +202,12 @@ int main(int argc, char *argv[]){
 	}else {
 /* child process start*/
 		fclose(curlout);
-		perform(opt , curlin);
+#ifndef RELEASE
+		perform(opt , stdout);
+#endif
+#ifdef RELEASE
+		perform(opt, curlin);
+#endif
 		fclose(curlin) ;
 /* child process end*/
 	}
